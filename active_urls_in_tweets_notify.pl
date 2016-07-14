@@ -53,11 +53,15 @@ sub extract_urls {
 
 my $count_by_url = {};
 my $users_by_url = {};
+my $count_by_url_and_user = {};
 
 foreach my $tweet (@{$results->{hits}->{hits}}) {
     $tweet = $tweet->{_source};
     my $urls = extract_urls $tweet->{text};
     for my $url (@$urls) {
+        my $url_and_user = $url . "_" . $tweet->{user};
+        $count_by_url_and_user->{$url_and_user}++;
+        next if $count_by_url_and_user->{$url_and_user} > 1;
         $count_by_url->{$url}++;
         push @{$users_by_url->{$url}}, $tweet->{user};
     }
