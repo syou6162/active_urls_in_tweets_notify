@@ -11,7 +11,7 @@ my $e = Search::Elasticsearch->new(
     nodes => [ 'localhost:9200', ]
 );
 
-my $hour = 1;
+my $hour = 2;
 
 my $results = $e->search(
     index => 'twitter_public_timeline',
