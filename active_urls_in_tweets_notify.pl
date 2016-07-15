@@ -68,8 +68,7 @@ foreach my $tweet (@{$results->{hits}->{hits}}) {
 }
 
 my $mech = WWW::Mechanize->new;
-
-print encode_utf8 "ここ" . $hour . "時間で話題になったURL一覧です:bow:\n";
+my $result = [];
 
 foreach ( sort { $count_by_url->{$a} <=> $count_by_url->{$b} } keys $count_by_url ) {
     my $url = $_;
@@ -78,7 +77,13 @@ foreach ( sort { $count_by_url->{$a} <=> $count_by_url->{$b} } keys $count_by_ur
     eval { $mech->get($url); };
     next unless $mech->status == 200;
     my $users = [map { "@" . $_ } @{$users_by_url->{$url}}];
-    print encode_utf8 $mech->title . " => (" . join(", ",  @$users) . ")\n";
-    print $url, "\n";
-    print "\n";
+    push @$result, $mech->title . " => (" . join(", ",  @$users) . ")\n";
+    push @$result, $url . "\n";
+}
+
+if (scalar @$result) {
+    print encode_utf8 "ここ" . $hour . "時間で話題になったURL一覧です:bow:\n";
+    foreach (@$result) {
+        print encode_utf8 $_;
+    }
 }
